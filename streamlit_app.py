@@ -1,29 +1,75 @@
 import streamlit as st
-import numpy as np
 import pickle
+import numpy as np
 
-# Judul Aplikasi
-st.title("Prediksi Kelulusan Mahasiswa — Classification Model")
+# =========================
+# 🎀 Custom Pink CSS
+# =========================
+pink_css = """
+<style>
+/* Background color */
+body {
+    background-color: #ffe6f2 !important;
+}
 
-# Load model (jika sudah ada model tersimpan)
-# try:
-#     with open('model.pkl', 'rb') as f:
-#         model = pickle.load(f)
-# except FileNotFoundError:
-#     model = None
+/* Streamlit headers */
+h1, h2, h3 {
+    color: #d63384;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+}
 
-# Input user
-st.header("Input Data Mahasiswa")
-absensi = st.number_input("Persentase Kehadiran (%)", min_value=0, max_value=100, step=1)
-nilai_tugas = st.number_input("Nilai Tugas", min_value=0, max_value=100, step=1)
-nilai_ujian = st.number_input("Nilai Ujian", min_value=0, max_value=100, step=1)
+/* Cards */
+.block-container {
+    padding: 2rem 2rem;
+    background-color: #ffffffdd;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(255, 105, 180, 0.2);
+}
 
-# Prediksi (dummy sebelum model dibuat)
-def dummy_predict(absen, tugas, ujian):
-    skor = (absen * 0.3) + (tugas * 0.3) + (ujian * 0.4)
-    return "LULUS" if skor >= 60 else "TIDAK LULUS"
+/* Input style */
+.stNumberInput label {
+    color: #d63384 !important;
+    font-weight: 600;
+}
 
-if st.button("Prediksi Kelulusan"):
-    # jika model asli ada, gunakan: model.predict([[absensi, nilai_tugas, nilai_ujian]])
-    hasil = dummy_predict(absensi, nilai_tugas, nilai_ujian)
-    st.subheader(f"Hasil Prediksi: {hasil}")
+/* Button pink */
+.stButton>button {
+    background-color: #ff4da6 !important;
+    color: white !important;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 18px;
+    border: none;
+}
+.stButton>button:hover {
+    background-color: #e60073 !important;
+}
+</style>
+"""
+st.markdown(pink_css, unsafe_allow_html=True)
+
+# =========================
+# 🎓 Load Model
+# =========================
+model = pickle.load(open("model.pkl", "rb"))
+
+# =========================
+# UI
+# =========================
+st.title("🎀 Prediksi Kelulusan Mahasiswa 🎓")
+st.write("Masukkan data berikut untuk memprediksi apakah mahasiswa *Lulus* atau *Tidak Lulus*.")
+
+absen = st.number_input("📌 Persentase Absensi (%)", 0, 100)
+tugas = st.number_input("📘 Nilai Tugas", 0, 100)
+ujian = st.number_input("📝 Nilai Ujian", 0, 100)
+
+if st.button("💗 Prediksi Sekarang"):
+    # Convert input
+    x = np.array([[absen, tugas, ujian]])
+    pred = model.predict(x)[0]
+
+    if pred == 1:
+        st.success("🎉 **Hasil: LULUS!** Tetap pertahankan prestasimu ya 💖")
+    else:
+        st.error("❌ **Hasil: TIDAK LULUS** Semangat! Kamu pasti bisa 💪")
