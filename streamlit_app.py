@@ -1,6 +1,6 @@
 import streamlit as st
-import pickle
 import numpy as np
+from joblib import load
 
 # =========================
 # 🎀 Custom Pink CSS
@@ -52,7 +52,7 @@ st.markdown(pink_css, unsafe_allow_html=True)
 # =========================
 # 🎓 Load Model
 # =========================
-model = pickle.load(open("model.pkl", "rb"))
+model = load("models/model.joblib")   # <<< PERUBAHAN PENTING
 
 # =========================
 # UI
